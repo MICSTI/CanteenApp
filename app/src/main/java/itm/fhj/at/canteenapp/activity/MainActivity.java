@@ -1,13 +1,10 @@
 package itm.fhj.at.canteenapp.activity;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -16,14 +13,21 @@ import android.widget.TextView;
 
 import itm.fhj.at.canteenapp.R;
 import itm.fhj.at.canteenapp.fragment.CanteenDetailFragment;
+import itm.fhj.at.canteenapp.fragment.FavouriteMealFragment;
+import itm.fhj.at.canteenapp.fragment.LocationFragment;
 
 
-public class MainActivity extends AppCompatActivity implements CanteenDetailFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements
+        CanteenDetailFragment.OnFragmentInteractionListener,
+        FavouriteMealFragment.OnFragmentInteractionListener,
+        LocationFragment.OnLocationFragmentInteractionListener {
 
     private ViewPager vpHost;
     private CanteenPagerAdapter adapter;
 
-    private TextView fragmentTitle;
+    private LocationFragment locationFragment;
+    private CanteenDetailFragment canteenDetailFragment;
+    private FavouriteMealFragment favouriteMealFragment;
 
 
     @Override
@@ -33,7 +37,10 @@ public class MainActivity extends AppCompatActivity implements CanteenDetailFrag
 
         vpHost = (ViewPager) findViewById(R.id.vpHost);
 
-        fragmentTitle = (TextView) findViewById(R.id.fragmentTitle);
+        // init fragments
+        locationFragment = LocationFragment.newInstance();
+        canteenDetailFragment = CanteenDetailFragment.newInstance();
+        favouriteMealFragment = FavouriteMealFragment.newInstance();
 
         preparePager();
     }
@@ -62,20 +69,38 @@ public class MainActivity extends AppCompatActivity implements CanteenDetailFrag
     }
 
     private void preparePager() {
+        int defaultItem = 1;
+
         adapter = new CanteenPagerAdapter(getSupportFragmentManager());
         vpHost.setAdapter(adapter);
-        vpHost.setCurrentItem(1);
+        vpHost.setCurrentItem(defaultItem);
 
         vpHost.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                fragmentTitle.setText(adapter.getPageTitle(position));
+                setTitle(adapter.getPageTitle(position));
             }
         });
+
+        // initially set app bar title
+        setTitle(adapter.getPageTitle(defaultItem));
     }
 
+    // CanteenDetail
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    // Location
+    @Override
+    public void onLocationFragmentInteraction(String id) {
+
+    }
+
+    // Favourite Meal
+    @Override
+    public void onFragmentInteraction(String id) {
 
     }
 
@@ -87,7 +112,16 @@ public class MainActivity extends AppCompatActivity implements CanteenDetailFrag
 
         @Override
         public Fragment getItem(int i) {
-            return CanteenDetailFragment.newInstance();
+            switch (i) {
+                case 0:
+                    return locationFragment;
+                case 1:
+                    return canteenDetailFragment;
+                case 2:
+                    return favouriteMealFragment;
+            }
+
+            return null;
         }
 
         @Override
@@ -99,11 +133,11 @@ public class MainActivity extends AppCompatActivity implements CanteenDetailFrag
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Locations".toUpperCase();
+                    return getString(R.string.title_locations);
                 case 1:
-                    return "Meal Schedule".toUpperCase();
+                    return getString(R.string.title_meal_schedule);
                 case 2:
-                    return "Favourite Meals".toUpperCase();
+                    return getString(R.string.title_favourite_meals);
                 default:
                     return "X";
             }

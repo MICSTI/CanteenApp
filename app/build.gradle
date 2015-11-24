@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "itm.fhj.at.canteenapp"
         minSdkVersion 17
-        targetSdkVersion 23
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
@@ -22,4 +22,5 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.0'
+    compile files('src/main/java/itm/fhj/at/canteenapp/vendor/jsoup-1.8.3.jar')
 }
