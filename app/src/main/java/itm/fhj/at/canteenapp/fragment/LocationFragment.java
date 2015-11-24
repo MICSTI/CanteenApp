@@ -3,6 +3,8 @@ package itm.fhj.at.canteenapp.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +14,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import org.jsoup.nodes.Document;
+
+import java.util.ArrayList;
+
 import itm.fhj.at.canteenapp.R;
 
 import itm.fhj.at.canteenapp.fragment.dummy.DummyContent;
+import itm.fhj.at.canteenapp.handler.HTMLDataHandler;
+import itm.fhj.at.canteenapp.handler.LocationsHandler;
+import itm.fhj.at.canteenapp.interfaces.IParseCallback;
+import itm.fhj.at.canteenapp.model.Location;
 
 /**
  * A fragment representing a list of Items.
@@ -25,9 +35,11 @@ import itm.fhj.at.canteenapp.fragment.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link itm.fhj.at.canteenapp.fragment.LocationFragment.OnLocationFragmentInteractionListener}
  * interface.
  */
-public class LocationFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class LocationFragment extends Fragment implements AbsListView.OnItemClickListener, IParseCallback {
 
     private OnLocationFragmentInteractionListener mListener;
+
+    private ArrayList<Location> retrievedLocations = new ArrayList<Location>();
 
     /**
      * The fragment's ListView/GridView.
@@ -59,9 +71,14 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Load locations
+        HTMLDataHandler dataHandler = new HTMLDataHandler();
+        dataHandler.setCallback(this);
+        dataHandler.loadHTMLStringFromURL("http://www.mensen.at");
+
         // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+        /*mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);*/
     }
 
     @Override
@@ -71,7 +88,6 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
 
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
@@ -119,6 +135,15 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
         }
     }
 
+    @Override
+    public void processLocationData(Document locationData) {
+        LocationsHandler locationsHandler = new LocationsHandler(locationData);
+        this.retrievedLocations = locationsHandler.getLocations();
+
+        mAdapter = new ArrayAdapter<Location>(getActivity(), android.R.layout.simple_list_item_1, this.retrievedLocations);
+        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -133,5 +158,4 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
         // TODO: Update argument type and name
         public void onLocationFragmentInteraction(String id);
     }
-
 }
