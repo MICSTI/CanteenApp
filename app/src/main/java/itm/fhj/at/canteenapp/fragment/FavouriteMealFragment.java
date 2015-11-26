@@ -1,6 +1,8 @@
 package itm.fhj.at.canteenapp.fragment;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,6 +36,8 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
 
     private OnFragmentInteractionListener mListener;
 
+    private SharedPreferences preferences;
+
     /**
      * The fragment's ListView/GridView.
      */
@@ -63,6 +67,8 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        preferences = getActivity().getSharedPreferences(Config.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
         // TODO: Change Adapter to display your content
         mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
@@ -131,6 +137,7 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add_favourite_menu) {
             AddFavouriteMealFragment dialog = new AddFavouriteMealFragment();
+            dialog.setPreferences(preferences);
             dialog.show(getActivity().getSupportFragmentManager(), Config.DIALOG_ADD_FAVOURITE_MEAL);
 
             return true;

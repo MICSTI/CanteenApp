@@ -20,7 +20,7 @@
     <string name="section_label">Placeholder Fragment</string>
 
     <string name="action_add_favourite">Add favourite meal</string>
-
     <string name="add_favourite_meal">Add a new favourite meal</string>
+    <string name="favourite_meal_hint">Name of your new favourite meal</string>
 
 </resources>

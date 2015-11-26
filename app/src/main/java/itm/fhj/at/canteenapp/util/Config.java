@@ -6,5 +6,7 @@ package itm.fhj.at.canteenapp.util;
 public class Config {
     public static String SHARED_PREFERENCES = "mensa-preferences";
 
+    public static String KEY_FAVOURITE_MEALS = "favourite-meals";
+
     public static String DIALOG_ADD_FAVOURITE_MEAL = "add-favourite-meal-dialog";
 }
