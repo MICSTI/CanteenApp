@@ -72,9 +72,9 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
         super.onCreate(savedInstanceState);
 
         // Load locations
-        HTMLDataHandler dataHandler = new HTMLDataHandler();
+        /*HTMLDataHandler dataHandler = new HTMLDataHandler();
         dataHandler.setCallback(this);
-        dataHandler.loadHTMLStringFromURL("http://www.mensen.at");
+        dataHandler.loadHTMLStringFromURL("http://www.mensen.at");*/
 
         // TODO: Change Adapter to display your content
         /*mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),

@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements
     private void preparePager() {
         int defaultItem = 1;
 
+        // check if a default canteen is saved in shared preferences
+
+
         adapter = new CanteenPagerAdapter(getSupportFragmentManager());
         vpHost.setAdapter(adapter);
         vpHost.setCurrentItem(defaultItem);
