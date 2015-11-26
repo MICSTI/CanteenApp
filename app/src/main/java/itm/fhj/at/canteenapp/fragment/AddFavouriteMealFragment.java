@@ -22,6 +22,8 @@ public class AddFavouriteMealFragment extends DialogFragment {
 
     private SharedPreferences preferences;
 
+    private DialogFinishedListener listener;
+
     public AddFavouriteMealFragment() {
 
     }
@@ -62,6 +64,8 @@ public class AddFavouriteMealFragment extends DialogFragment {
                        String message = success ? "Favourite meal successfully saved" : "Favourite meal could not be saved";
                        Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
                        toast.show();
+
+                       listener.onDialogFinished(mealName);
                    }
                })
                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -73,6 +77,14 @@ public class AddFavouriteMealFragment extends DialogFragment {
 
         // Create the AlertDialog object and return it
         return builder.create();
+    }
+
+    public void setListener(DialogFinishedListener listener) {
+        this.listener = listener;
+    }
+
+    public interface DialogFinishedListener {
+        void onDialogFinished(String text);
     }
 
 }

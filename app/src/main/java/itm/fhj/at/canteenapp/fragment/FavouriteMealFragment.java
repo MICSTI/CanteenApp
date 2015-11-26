@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -73,17 +72,7 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preferences = getActivity().getSharedPreferences(Config.SHARED_PREFERENCES, Context.MODE_PRIVATE);
-
-        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "");
-
-        String[] favouritesArray = favouritesString.split(";");
-
-        favourites = new ArrayList<String>();
-
-        for (String fav : favouritesArray) {
-            favourites.add(fav);
-        }
+        updateArrayList();
 
         mAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, favourites);
@@ -121,9 +110,7 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
                 editor.putString(Config.KEY_FAVOURITE_MEALS, favouritesString);
                 editor.commit();
 
-                ListAdapter newAdapter = new ArrayAdapter<String>(getActivity(),
-                        android.R.layout.simple_list_item_1, android.R.id.text1, favourites);
-                ((AdapterView<ListAdapter>) mListView).setAdapter(newAdapter);
+                updateListView();
 
                 Toast toast = Toast.makeText(getContext(), "Removed " + toRemove + " from favourite meals", Toast.LENGTH_SHORT);
                 toast.show();
@@ -180,6 +167,13 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
         if (id == R.id.action_add_favourite_menu) {
             AddFavouriteMealFragment dialog = new AddFavouriteMealFragment();
             dialog.setPreferences(preferences);
+            dialog.setListener(new AddFavouriteMealFragment.DialogFinishedListener() {
+                @Override
+                public void onDialogFinished(String text) {
+                    updateArrayList();
+                    updateListView();
+                }
+            });
             dialog.show(getActivity().getSupportFragmentManager(), Config.DIALOG_ADD_FAVOURITE_MEAL);
 
             return true;
@@ -199,6 +193,26 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
         if (emptyView instanceof TextView) {
             ((TextView) emptyView).setText(emptyText);
         }
+    }
+
+    private void updateArrayList() {
+        preferences = getActivity().getSharedPreferences(Config.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+
+        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "");
+
+        String[] favouritesArray = favouritesString.split(";");
+
+        favourites = new ArrayList<String>();
+
+        for (String fav : favouritesArray) {
+            favourites.add(fav);
+        }
+    }
+
+    private void updateListView() {
+        ListAdapter newAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, favourites);
+        ((AdapterView<ListAdapter>) mListView).setAdapter(newAdapter);
     }
 
     /**
