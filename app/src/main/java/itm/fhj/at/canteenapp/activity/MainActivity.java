@@ -1,5 +1,7 @@
 package itm.fhj.at.canteenapp.activity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +19,7 @@ import itm.fhj.at.canteenapp.fragment.CanteenDetailFragment;
 import itm.fhj.at.canteenapp.fragment.FavouriteMealFragment;
 import itm.fhj.at.canteenapp.fragment.LocationFragment;
 import itm.fhj.at.canteenapp.model.Location;
+import itm.fhj.at.canteenapp.util.Config;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -26,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private ViewPager vpHost;
     private CanteenPagerAdapter adapter;
+
+    private SharedPreferences preferences;
 
     private LocationFragment locationFragment;
     private CanteenDetailFragment canteenDetailFragment;
@@ -38,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         vpHost = (ViewPager) findViewById(R.id.vpHost);
+
+        preferences = getSharedPreferences(Config.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
         // init fragments
         locationFragment = LocationFragment.newInstance();
@@ -71,10 +78,18 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void preparePager() {
-        int defaultItem = 1;
+        int defaultItem = -1;
 
         // check if a default canteen is saved in shared preferences
+        int canteenId = preferences.getInt(Config.KEY_CANTEEN_ID, 0);
 
+        if (canteenId > 0) {
+            // a default canteen has already been selected
+            defaultItem = 1;
+        } else {
+            // show canteen selection
+            defaultItem = 0;
+        }
 
         adapter = new CanteenPagerAdapter(getSupportFragmentManager());
         vpHost.setAdapter(adapter);
