@@ -115,8 +115,11 @@ public class MainActivity extends AppCompatActivity implements
     // Location
     @Override
     public void onLocationFragmentInteraction(Location location) {
-        Toast toast = Toast.makeText(this, "Selected canteen " + location.getName(), Toast.LENGTH_SHORT);
-        toast.show();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(Config.KEY_CANTEEN_ID, location.getId());
+        editor.commit();
+
+        vpHost.setCurrentItem(1);
     }
 
     // Favourite Meal
