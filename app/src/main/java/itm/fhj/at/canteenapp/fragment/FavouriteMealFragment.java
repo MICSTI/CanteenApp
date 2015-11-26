@@ -17,6 +17,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import itm.fhj.at.canteenapp.R;
 
@@ -37,6 +40,8 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
     private OnFragmentInteractionListener mListener;
 
     private SharedPreferences preferences;
+
+    private ArrayList<String> favourites;
 
     /**
      * The fragment's ListView/GridView.
@@ -70,9 +75,18 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
 
         preferences = getActivity().getSharedPreferences(Config.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
-        // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "");
+
+        String[] favouritesArray = favouritesString.split(";");
+
+        favourites = new ArrayList<String>();
+
+        for (String fav : favouritesArray) {
+            favourites.add(fav);
+        }
+
+        mAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, favourites);
     }
 
     @Override
@@ -87,8 +101,36 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
         mListView = (AbsListView) view.findViewById(android.R.id.list);
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
-        // Set OnItemClickListener so we can be notified on item clicks
-        mListView.setOnItemClickListener(this);
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                String toRemove = favourites.get(position);
+
+                favourites.remove(position);
+
+                String favouritesString = "";
+
+                for (String fav : favourites) {
+                    favouritesString += fav + ";";
+                }
+
+                if (favouritesString.length() > 0)
+                    favouritesString = favouritesString.substring(0, favouritesString.length() - 1);
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(Config.KEY_FAVOURITE_MEALS, favouritesString);
+                editor.commit();
+
+                ListAdapter newAdapter = new ArrayAdapter<String>(getActivity(),
+                        android.R.layout.simple_list_item_1, android.R.id.text1, favourites);
+                ((AdapterView<ListAdapter>) mListView).setAdapter(newAdapter);
+
+                Toast toast = Toast.makeText(getContext(), "Removed " + toRemove + " from favourite meals", Toast.LENGTH_SHORT);
+                toast.show();
+
+                return true;
+            }
+        });
 
         return view;
     }
