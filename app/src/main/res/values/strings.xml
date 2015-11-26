@@ -15,4 +15,6 @@
     <string name="title_meal_schedule">Meal Schedule</string>
     <string name="section_label">Placeholder Fragment</string>
 
+    <string name="action_add_favourite">Add favourite meal</string>
+
 </resources>

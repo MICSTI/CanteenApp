@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -69,6 +71,9 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favouritemeal, container, false);
 
+        // enable menu
+        setHasOptionsMenu(true);
+
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
@@ -104,6 +109,13 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
             // fragment is attached to one) that an item has been selected.
             mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_favourite_meal, menu);
+        super.onCreateOptionsMenu(menu,inflater);
     }
 
     /**
