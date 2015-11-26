@@ -10,11 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import itm.fhj.at.canteenapp.R;
 import itm.fhj.at.canteenapp.fragment.CanteenDetailFragment;
 import itm.fhj.at.canteenapp.fragment.FavouriteMealFragment;
 import itm.fhj.at.canteenapp.fragment.LocationFragment;
+import itm.fhj.at.canteenapp.model.Location;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -97,8 +99,9 @@ public class MainActivity extends AppCompatActivity implements
 
     // Location
     @Override
-    public void onLocationFragmentInteraction(String id) {
-
+    public void onLocationFragmentInteraction(Location location) {
+        Toast toast = Toast.makeText(this, "Selected canteen " + location.getName(), Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     // Favourite Meal

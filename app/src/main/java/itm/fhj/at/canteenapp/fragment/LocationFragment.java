@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jsoup.nodes.Document;
 
@@ -72,9 +73,9 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
         super.onCreate(savedInstanceState);
 
         // Load locations
-        /*HTMLDataHandler dataHandler = new HTMLDataHandler();
+        HTMLDataHandler dataHandler = new HTMLDataHandler();
         dataHandler.setCallback(this);
-        dataHandler.loadHTMLStringFromURL("http://www.mensen.at");*/
+        dataHandler.loadHTMLStringFromURL("http://www.mensen.at");
 
         // TODO: Change Adapter to display your content
         /*mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
@@ -118,7 +119,7 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onLocationFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            mListener.onLocationFragmentInteraction(retrievedLocations.get(position));
         }
     }
 
@@ -156,6 +157,6 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
      */
     public interface OnLocationFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onLocationFragmentInteraction(String id);
+        public void onLocationFragmentInteraction(Location location);
     }
 }
