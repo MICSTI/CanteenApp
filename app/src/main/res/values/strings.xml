@@ -2,6 +2,10 @@
 <resources>
 
     <string name="app_name">CanteenApp</string>
+
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -16,5 +20,7 @@
     <string name="section_label">Placeholder Fragment</string>
 
     <string name="action_add_favourite">Add favourite meal</string>
+
+    <string name="add_favourite_meal">Add a new favourite meal</string>
 
 </resources>

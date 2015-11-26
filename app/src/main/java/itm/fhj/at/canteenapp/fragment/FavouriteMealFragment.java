@@ -3,9 +3,11 @@ package itm.fhj.at.canteenapp.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import itm.fhj.at.canteenapp.R;
 
 import itm.fhj.at.canteenapp.fragment.dummy.DummyContent;
+import itm.fhj.at.canteenapp.util.Config;
 
 /**
  * A fragment representing a list of Items.
@@ -116,6 +119,24 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
         menu.clear();
         inflater.inflate(R.menu.menu_favourite_meal, menu);
         super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_add_favourite_menu) {
+            AddFavouriteMealFragment dialog = new AddFavouriteMealFragment();
+            dialog.show(getActivity().getSupportFragmentManager(), Config.DIALOG_ADD_FAVOURITE_MEAL);
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
