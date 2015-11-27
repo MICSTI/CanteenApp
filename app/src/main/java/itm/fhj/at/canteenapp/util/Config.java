@@ -15,5 +15,7 @@ public class Config {
 
     public static String CURRENCY = "€";
 
+    public static String NOTIFICATION_ID = "notification-id";
+
     public static int NOTIFICATION_HOUR = 11;
 }

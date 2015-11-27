@@ -133,7 +133,10 @@ public class FavouriteMealService extends IntentService {
         }
 
         // define notification action
+        int notificationId = 1;
+
         Intent resultIntent = new Intent(this, MainActivity.class);
+        resultIntent.putExtra(Config.NOTIFICATION_ID, notificationId);
 
         PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -142,8 +145,6 @@ public class FavouriteMealService extends IntentService {
                 .setContentTitle("Heute gibt's was Gutes!")
                 .setContentText("Es gibt " + text)
                 .setContentIntent(resultPendingIntent);
-
-        int notificationId = 001;
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 

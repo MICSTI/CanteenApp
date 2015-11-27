@@ -1,6 +1,7 @@
 package itm.fhj.at.canteenapp.activity;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -48,6 +49,23 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // get intent
+        Intent passedIntent = getIntent();
+
+        try {
+            // if app was started from notification, dismiss the notification
+            int notificationId = (int)passedIntent.getSerializableExtra(Config.NOTIFICATION_ID);
+
+            if (notificationId > 0) {
+                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                notificationManager.cancel(notificationId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         setContentView(R.layout.activity_main);
 
         vpHost = (ViewPager) findViewById(R.id.vpHost);
@@ -61,22 +79,26 @@ public class MainActivity extends AppCompatActivity implements
         favouriteMealFragment = FavouriteMealFragment.newInstance();
 
         preparePager();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         // create intent with service
         Intent intent = new Intent(this, FavouriteMealService.class);
-        startService(intent);
 
         // start favourite meal service to run every day at a specified time
-        /*Calendar calendar = Calendar.getInstance();
-        //calendar.set(Calendar.HOUR_OF_DAY, Config.NOTIFICATION_HOUR);
-        calendar.set(Calendar.HOUR_OF_DAY, 14);
-        calendar.set(Calendar.MINUTE, 57);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, Config.NOTIFICATION_HOUR);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);*/
+        alarmManager.cancel(pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
 
