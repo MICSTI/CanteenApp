@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import itm.fhj.at.canteenapp.R;
 import itm.fhj.at.canteenapp.model.Meal;
+import itm.fhj.at.canteenapp.util.Config;
 
 /**
  * Created by michael.stifter on 05.11.2015.
@@ -43,7 +44,7 @@ public class MealScheduleItem implements Item {
         txtMealDescription.setText(meal.getDescription());
 
         TextView txtMealPrice = (TextView) view.findViewById(R.id.text_meal_price);
-        txtMealPrice.setText(meal.getPrice());
+        txtMealPrice.setText(meal.getPrice() + " " + Config.CURRENCY);
 
         TextView txtMealType = (TextView) view.findViewById(R.id.text_meal_type);
         txtMealType.setText(meal.getType());

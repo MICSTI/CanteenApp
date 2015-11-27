@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -117,7 +118,14 @@ public class MainActivity extends AppCompatActivity implements
     public void onLocationFragmentInteraction(Location location) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(Config.KEY_CANTEEN_ID, location.getId());
-        editor.putString(Config.KEY_CANTEEN_NAME, location.getName());
+
+        String canteenName =  Html.fromHtml(location.getName()).toString().trim();
+
+        if (canteenName.startsWith("- ")) {
+            canteenName = canteenName.substring(2);
+        }
+
+        editor.putString(Config.KEY_CANTEEN_NAME, canteenName);
         editor.commit();
 
         vpHost.setCurrentItem(1);

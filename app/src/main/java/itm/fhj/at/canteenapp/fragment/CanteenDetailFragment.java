@@ -42,13 +42,14 @@ import itm.fhj.at.canteenapp.util.Config;
  */
 public class CanteenDetailFragment extends Fragment {
 
-    // mensa id
-    private int mensaId;
+    // canteen
+    private Location canteen;
 
     // adapter
     private MealScheduleAdapter mealScheduleAdapter;
 
-    private TextView txtMensaId;
+    private SharedPreferences preferences;
+
     private TextView txtMensaName;
     private ListView lstMealSchedule;
 
@@ -74,8 +75,16 @@ public class CanteenDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
 
+        // try to get default canteen from shared preferences
+        preferences = getActivity().getSharedPreferences(Config.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+
+        int canteenId = preferences.getInt(Config.KEY_CANTEEN_ID, 0);
+
+        if (canteenId > 0) {
+            String canteenName = preferences.getString(Config.KEY_CANTEEN_NAME, "");
+
+            canteen = new Location(canteenId, canteenName);
         }
     }
 
@@ -86,28 +95,18 @@ public class CanteenDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_canteen_detail, container, false);
 
-        txtMensaId = (TextView) layout.findViewById(R.id.txt_mensa_id);
         txtMensaName = (TextView) layout.findViewById(R.id.txt_mensa_name);
         lstMealSchedule = (ListView) layout.findViewById(R.id.list_meal_schedule);
-
-        // get mensa id from intent extra
-        //mensaId = (int)getIntent().getSerializableExtra("MENSA_ID");
-
-        // TODO remove hard-coded mensa id
-        mensaId = 50;
-
-        // check shared preferences for a valid meal schedule
-        SharedPreferences preferences = getActivity().getSharedPreferences(Config.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
         // TODO remove fake JSON and implement real parsing
 
         JSONObject demoMealSchedule = new JSONObject();
 
         try {
-            demoMealSchedule.put("id", mensaId);
+            demoMealSchedule.put("id", canteen.getId());
             demoMealSchedule.put("timestamp", 12345678);
             demoMealSchedule.put("datetime", "26.10.2015T08:00:00");
-            demoMealSchedule.put("name", "FH JOANNEUM Kapfenberg");
+            demoMealSchedule.put("name", canteen.getName());
 
             JSONArray mealSchedule = new JSONArray();
 
@@ -120,17 +119,17 @@ public class CanteenDetailFragment extends Fragment {
             JSONArray meals = new JSONArray();
 
             JSONObject meal1 = new JSONObject();
-            meal1.put("price", 4.30);
+            meal1.put("price", "4.30");
             meal1.put("description", "Gemüsesupppe, Marillenknödel");
             meal1.put("type", "Vegetarian");
 
             JSONObject meal2 = new JSONObject();
-            meal2.put("price", 4.90);
+            meal2.put("price", "4.90");
             meal2.put("description", "Gemüsesuppe, Wiener Schnitzel");
             meal2.put("type", "Classic");
 
             JSONObject meal3 = new JSONObject();
-            meal3.put("price", 5.90);
+            meal3.put("price", "5.90");
             meal3.put("description", "Paprikaschnitzel mit Salzkartoffeln und Salat vom Buffet");
             meal3.put("type", "Brainfood");
 
@@ -151,11 +150,11 @@ public class CanteenDetailFragment extends Fragment {
 
 
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(String.valueOf(mensaId), demoMealSchedule.toString());
+        editor.putString(Config.KEY_SCHEDULE_PREFIX + String.valueOf(canteen.getId()), demoMealSchedule.toString());
         editor.commit();
 
         String defaultString = "";
-        String mealJson = preferences.getString(String.valueOf(mensaId), defaultString);
+        String mealJson = preferences.getString(Config.KEY_SCHEDULE_PREFIX + String.valueOf(canteen.getId()), defaultString);
 
         // TODO add check if timestamp is valid
 
@@ -165,10 +164,7 @@ public class CanteenDetailFragment extends Fragment {
 
             MealSchedule mealSchedule = parseMealScheduleJsonObject(mealScheduleJson);
 
-            // mensa id
-            txtMensaId.setText(String.valueOf(mensaId));
-
-            // mensa name
+            // canteen name
             txtMensaName.setText(mealSchedule.getLocation().getName());
 
             // list view initialisation

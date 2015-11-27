@@ -9,6 +9,9 @@ public class Config {
     public static String KEY_CANTEEN_ID = "canteen-id";
     public static String KEY_CANTEEN_NAME = "canteen-name";
     public static String KEY_FAVOURITE_MEALS = "favourite-meals";
+    public static String KEY_SCHEDULE_PREFIX = "schedule-";
 
     public static String DIALOG_ADD_FAVOURITE_MEAL = "add-favourite-meal-dialog";
+
+    public static String CURRENCY = "€";
 }

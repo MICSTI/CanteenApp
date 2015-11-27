@@ -7,7 +7,13 @@
 
     <TextView
         android:id="@+id/text_day"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:padding="5dp"
+        android:background="@color/darkGrey"
+        android:textColor="@color/white"
+        />
     
 </LinearLayout>
