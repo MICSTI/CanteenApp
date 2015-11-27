@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onLocationFragmentInteraction(Location location) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(Config.KEY_CANTEEN_ID, location.getId());
+        editor.putString(Config.KEY_CANTEEN_NAME, location.getName());
         editor.commit();
 
         vpHost.setCurrentItem(1);
