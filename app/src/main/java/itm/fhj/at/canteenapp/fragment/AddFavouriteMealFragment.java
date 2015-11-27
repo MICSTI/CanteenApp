@@ -48,24 +48,27 @@ public class AddFavouriteMealFragment extends DialogFragment {
                        // save favourite meal in shared preferences
                        EditText mealNameElement = (EditText) layout.findViewById(R.id.favourite_meal_name);
 
-                       String mealName = mealNameElement.getText().toString();
+                       String mealName = mealNameElement.getText().toString().trim();
 
-                       String favourites = preferences.getString(Config.KEY_FAVOURITE_MEALS, "");
+                       // check if entered text is not empty
+                       if (!mealName.isEmpty()) {
+                           String favourites = preferences.getString(Config.KEY_FAVOURITE_MEALS, "");
 
-                       if (favourites.isEmpty())
-                           favourites = mealName;
-                       else
-                           favourites += ";" + mealName;
+                           if (favourites.isEmpty())
+                               favourites = mealName;
+                           else
+                               favourites += ";" + mealName;
 
-                       SharedPreferences.Editor editor = preferences.edit();
-                       editor.putString(Config.KEY_FAVOURITE_MEALS, favourites);
-                       boolean success = editor.commit();
+                           SharedPreferences.Editor editor = preferences.edit();
+                           editor.putString(Config.KEY_FAVOURITE_MEALS, favourites);
+                           boolean success = editor.commit();
 
-                       String message = success ? "Favourite meal successfully saved" : "Favourite meal could not be saved";
-                       Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
-                       toast.show();
+                           String message = success ? "Favourite meal successfully saved" : "Favourite meal could not be saved";
+                           Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+                           toast.show();
 
-                       listener.onDialogFinished(mealName);
+                           listener.onDialogFinished(mealName);
+                       }
                    }
                })
                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
