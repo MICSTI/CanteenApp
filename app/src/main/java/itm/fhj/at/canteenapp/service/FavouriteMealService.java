@@ -1,9 +1,12 @@
 package itm.fhj.at.canteenapp.service;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -12,6 +15,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import itm.fhj.at.canteenapp.R;
+import itm.fhj.at.canteenapp.activity.MainActivity;
 import itm.fhj.at.canteenapp.model.Location;
 import itm.fhj.at.canteenapp.model.Meal;
 import itm.fhj.at.canteenapp.model.MealSchedule;
@@ -76,23 +81,18 @@ public class FavouriteMealService extends IntentService {
                 ArrayList<Meal> mealsToday = mealSchedule.getMeals("27.10.2015");
 
                 // build array list with meals to notify the user about
-                ArrayList<Meal> toNotify = new ArrayList<Meal>();
+                ArrayList<String> toNotify = new ArrayList<String>();
 
                 for (Meal meal : mealsToday) {
-                    if (checkFavouriteMeals(meal)) {
-                        toNotify.add(meal);
+                    String favourite = checkFavouriteMeals(meal);
+
+                    if (favourite != null && !toNotify.contains(favourite)) {
+                        toNotify.add(favourite);
                     }
                 }
 
                 if (toNotify.size() > 0) {
-                    // issue notification
-                    String favs = "";
-
-                    for (Meal m : toNotify) {
-                        favs += m.getDescription() + " / ";
-                    }
-
-                    Toast.makeText(this, favs, Toast.LENGTH_LONG).show();
+                    issueNotification(toNotify);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -112,12 +112,41 @@ public class FavouriteMealService extends IntentService {
         }
     }
 
-    private boolean checkFavouriteMeals(Meal meal) {
+    private String checkFavouriteMeals(Meal meal) {
         for (String fav : favourites) {
             if (meal.getDescription().toLowerCase().contains(fav.toLowerCase()))
-                return true;
+                return fav;
         }
 
-        return false;
+        return null;
+    }
+
+    private void issueNotification(ArrayList<String> toNotify) {
+        // build notification content text
+        String text = "";
+
+        for (String fav : toNotify) {
+            if (!text.isEmpty())
+                text += " und ";
+
+            text += fav;
+        }
+
+        // define notification action
+        Intent resultIntent = new Intent(this, MainActivity.class);
+
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.dinner)
+                .setContentTitle("Heute gibt's was Gutes!")
+                .setContentText("Es gibt " + text)
+                .setContentIntent(resultPendingIntent);
+
+        int notificationId = 001;
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        notificationManager.notify(notificationId, mBuilder.build());
     }
 }
