@@ -15,6 +15,8 @@ import itm.fhj.at.canteenapp.R;
  */
 public class MealScheduleAdapter extends ArrayAdapter<Item> {
 
+    private Context mContext;
+
     public static final int TYPE_ITEM = 0;
     public static final int TYPE_HEADER = 1;
 
@@ -26,6 +28,7 @@ public class MealScheduleAdapter extends ArrayAdapter<Item> {
         super(context, 0, items);
         mInflater = LayoutInflater.from(context);
         mData = items;
+        mContext = context;
     }
 
     public void addItem(Item item) {

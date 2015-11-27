@@ -1,8 +1,12 @@
 package itm.fhj.at.canteenapp.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import itm.fhj.at.canteenapp.R;
 import itm.fhj.at.canteenapp.model.Meal;
@@ -17,13 +21,18 @@ public class MealScheduleItem implements Item {
 
     private Meal meal;
 
-    public MealScheduleItem(Meal meal) {
+    public MealScheduleItem(Meal meal, Context context) {
         this.meal = meal;
+        this.mContext = context;
     }
 
     public Meal getMeal() {
         return meal;
     }
+
+    private Context mContext;
+
+    private ArrayList<String> favourites;
 
     @Override
     public int getViewType() {
@@ -43,6 +52,11 @@ public class MealScheduleItem implements Item {
         TextView txtMealDescription = (TextView) view.findViewById(R.id.text_meal_description);
         txtMealDescription.setText(meal.getDescription());
 
+        // check if meal is a favourite meal
+        if (checkFavourite(meal.getDescription())) {
+            txtMealDescription.setTextColor(mContext.getResources().getColor(R.color.california));
+        }
+
         TextView txtMealPrice = (TextView) view.findViewById(R.id.text_meal_price);
         txtMealPrice.setText(meal.getPrice() + " " + Config.CURRENCY);
 
@@ -58,5 +72,18 @@ public class MealScheduleItem implements Item {
             return meal.toString();
 
         return "null";
+    }
+
+    public void setFavourites(ArrayList<String> favourites) {
+        this.favourites = favourites;
+    }
+
+    private boolean checkFavourite(String meal) {
+        for (String fav : favourites) {
+            if (meal.toLowerCase().contains(fav.toLowerCase()))
+                return true;
+        }
+
+        return false;
     }
 }

@@ -55,6 +55,8 @@ public class CanteenDetailFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private ArrayList<String> favourites;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -187,7 +189,8 @@ public class CanteenDetailFragment extends Fragment {
                 ArrayList<Meal> meals = mealSchedule.getCalendar().get(day);
 
                 for (Meal meal : meals) {
-                    MealScheduleItem item = new MealScheduleItem(meal);
+                    MealScheduleItem item = new MealScheduleItem(meal, getContext());
+                    item.setFavourites(favourites);
                     items.add(item);
                 }
             }
@@ -286,6 +289,10 @@ public class CanteenDetailFragment extends Fragment {
         }
 
         return mealSchedule;
+    }
+
+    public void setFavourites(ArrayList<String> favourites) {
+        this.favourites = favourites;
     }
 
 }

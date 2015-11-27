@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import itm.fhj.at.canteenapp.R;
 import itm.fhj.at.canteenapp.fragment.CanteenDetailFragment;
 import itm.fhj.at.canteenapp.fragment.FavouriteMealFragment;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements
         // init fragments
         locationFragment = LocationFragment.newInstance();
         canteenDetailFragment = CanteenDetailFragment.newInstance();
+        canteenDetailFragment.setFavourites(getFavouriteMeals());
         favouriteMealFragment = FavouriteMealFragment.newInstance();
 
         preparePager();
@@ -175,5 +178,19 @@ public class MainActivity extends AppCompatActivity implements
                     return "X";
             }
         }
+    }
+
+    public ArrayList<String> getFavouriteMeals() {
+        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "");
+
+        String[] favouritesArray = favouritesString.split(";");
+
+        ArrayList<String> favourites = new ArrayList<String>();
+
+        for (String fav : favouritesArray) {
+            favourites.add(fav);
+        }
+
+        return favourites;
     }
 }
