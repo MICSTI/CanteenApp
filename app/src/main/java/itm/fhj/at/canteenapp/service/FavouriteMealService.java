@@ -3,7 +3,20 @@ package itm.fhj.at.canteenapp.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import itm.fhj.at.canteenapp.model.Location;
+import itm.fhj.at.canteenapp.model.Meal;
+import itm.fhj.at.canteenapp.model.MealSchedule;
+import itm.fhj.at.canteenapp.util.CanteenHelper;
+import itm.fhj.at.canteenapp.util.Config;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -13,44 +26,16 @@ import android.widget.Toast;
  * helper methods.
  */
 public class FavouriteMealService extends IntentService {
-    // TODO: Rename actions, choose action names that describe tasks that this
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    private static final String ACTION_FOO = "itm.fhj.at.canteenapp.service.action.FOO";
-    private static final String ACTION_BAZ = "itm.fhj.at.canteenapp.service.action.BAZ";
 
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "itm.fhj.at.canteenapp.service.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "itm.fhj.at.canteenapp.service.extra.PARAM2";
+    private SharedPreferences preferences;
 
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionFoo(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, FavouriteMealService.class);
-        intent.setAction(ACTION_FOO);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
+    private ArrayList<String> favourites;
 
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, FavouriteMealService.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
+    private CanteenHelper canteenHelper;
+
+    private MealSchedule mealSchedule;
+
+    private Location canteen;
 
     public FavouriteMealService() {
         super("FavouriteMealService");
@@ -58,41 +43,81 @@ public class FavouriteMealService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            final String action = intent.getAction();
-            if (ACTION_FOO.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionFoo(param1, param2);
-            } else if (ACTION_BAZ.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
-            }
-        }
-    }
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        // get shared preferences
+        preferences = getSharedPreferences(Config.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+
+        // init helper
+        canteenHelper = new CanteenHelper();
+
+        // init favourites
+        favourites = new ArrayList<String>();
+
+        // get default canteen
+        int canteenId = preferences.getInt(Config.KEY_CANTEEN_ID, 0);
+
+        if (canteenId > 0) {
+            canteen = new Location(canteenId, preferences.getString(Config.KEY_CANTEEN_NAME, ""));
+
+            // get favourites from shared preferences
+            getFavourites();
+
+            // get meal schedule
+            JSONObject mealScheduleJson = null;
+            try {
+                mealScheduleJson = new JSONObject(preferences.getString(Config.KEY_SCHEDULE_PREFIX + String.valueOf(canteen.getId()), ""));
+                mealSchedule = canteenHelper.parseMealScheduleJsonObject(mealScheduleJson);
+
+                // get meals for today
+                ArrayList<Meal> mealsToday = mealSchedule.getMeals("27.10.2015");
+
+                // build array list with meals to notify the user about
+                ArrayList<Meal> toNotify = new ArrayList<Meal>();
+
+                for (Meal meal : mealsToday) {
+                    if (checkFavouriteMeals(meal)) {
+                        toNotify.add(meal);
+                    }
+                }
+
+                if (toNotify.size() > 0) {
+                    // issue notification
+                    String favs = "";
+
+                    for (Meal m : toNotify) {
+                        favs += m.getDescription() + " / ";
+                    }
+
+                    Toast.makeText(this, favs, Toast.LENGTH_LONG).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void getFavourites() {
+        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "");
+
+        String[] favouritesArray = favouritesString.split(";");
+
+        for (String fav : favouritesArray) {
+            favourites.add(fav);
+        }
+    }
+
+    private boolean checkFavouriteMeals(Meal meal) {
+        for (String fav : favourites) {
+            if (meal.getDescription().toLowerCase().contains(fav.toLowerCase()))
+                return true;
+        }
+
+        return false;
     }
 }
