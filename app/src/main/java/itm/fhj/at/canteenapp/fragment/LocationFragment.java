@@ -1,6 +1,9 @@
 package itm.fhj.at.canteenapp.fragment;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -72,14 +75,16 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Load locations
-        HTMLDataHandler dataHandler = new HTMLDataHandler();
-        dataHandler.setCallback(this);
-        dataHandler.loadHTMLStringFromURL("http://www.mensen.at");
-
-        // TODO: Change Adapter to display your content
-        /*mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);*/
+        // check if user is online
+        if (isOnline()) {
+            // load locations
+            HTMLDataHandler dataHandler = new HTMLDataHandler();
+            dataHandler.setCallback(this);
+            dataHandler.loadHTMLStringFromURL("http://www.mensen.at");
+        } else {
+            Toast noNetwork = Toast.makeText(getContext(), "No internet connection available", Toast.LENGTH_LONG);
+            noNetwork.show();
+        }
     }
 
     @Override
@@ -158,5 +163,12 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
     public interface OnLocationFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onLocationFragmentInteraction(Location location);
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
