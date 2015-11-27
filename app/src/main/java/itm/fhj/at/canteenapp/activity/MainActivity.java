@@ -1,6 +1,9 @@
 package itm.fhj.at.canteenapp.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
@@ -16,12 +19,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import itm.fhj.at.canteenapp.R;
 import itm.fhj.at.canteenapp.fragment.CanteenDetailFragment;
 import itm.fhj.at.canteenapp.fragment.FavouriteMealFragment;
 import itm.fhj.at.canteenapp.fragment.LocationFragment;
 import itm.fhj.at.canteenapp.model.Location;
+import itm.fhj.at.canteenapp.service.FavouriteMealService;
 import itm.fhj.at.canteenapp.util.Config;
 
 
@@ -56,6 +61,21 @@ public class MainActivity extends AppCompatActivity implements
         favouriteMealFragment = FavouriteMealFragment.newInstance();
 
         preparePager();
+
+        // create intent with service
+        Intent intent = new Intent(this, FavouriteMealService.class);
+
+        // start favourite meal service to run every day at a specified time
+        Calendar calendar = Calendar.getInstance();
+        //calendar.set(Calendar.HOUR_OF_DAY, Config.NOTIFICATION_HOUR);
+        calendar.set(Calendar.HOUR_OF_DAY, 14);
+        calendar.set(Calendar.MINUTE, 30);
+        calendar.set(Calendar.SECOND, 0);
+
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
 

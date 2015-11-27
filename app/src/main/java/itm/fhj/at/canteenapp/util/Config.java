@@ -14,4 +14,6 @@ public class Config {
     public static String DIALOG_ADD_FAVOURITE_MEAL = "add-favourite-meal-dialog";
 
     public static String CURRENCY = "€";
+
+    public static int NOTIFICATION_HOUR = 11;
 }

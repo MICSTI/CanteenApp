@@ -3,6 +3,7 @@ package itm.fhj.at.canteenapp.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.widget.Toast;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -87,5 +88,11 @@ public class FavouriteMealService extends IntentService {
     private void handleActionBaz(String param1, String param2) {
         // TODO: Handle action Baz
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        return super.onStartCommand(intent, flags, startId);
     }
 }
