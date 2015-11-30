@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -107,56 +108,7 @@ public class CanteenDetailFragment extends Fragment {
         txtMensaName = (TextView) layout.findViewById(R.id.txt_mensa_name);
         lstMealSchedule = (ListView) layout.findViewById(R.id.list_meal_schedule);
 
-        // TODO remove fake JSON and implement real parsing
-
-        JSONObject demoMealSchedule = new JSONObject();
-
-        try {
-            demoMealSchedule.put("id", canteen.getId());
-            demoMealSchedule.put("timestamp", 12345678);
-            demoMealSchedule.put("datetime", "26.10.2015T08:00:00");
-            demoMealSchedule.put("name", canteen.getName());
-
-            JSONArray mealSchedule = new JSONArray();
-
-            JSONObject day1 = new JSONObject();
-            day1.put("date", "26.10.2015");
-
-            JSONObject day2 = new JSONObject();
-            day2.put("date", "27.10.2015");
-
-            JSONArray meals = new JSONArray();
-
-            JSONObject meal1 = new JSONObject();
-            meal1.put("price", "4.30");
-            meal1.put("description", "Gemüsesupppe, Marillenknödel");
-            meal1.put("type", "Vegetarian");
-
-            JSONObject meal2 = new JSONObject();
-            meal2.put("price", "4.90");
-            meal2.put("description", "Gemüsesuppe, Wiener Schnitzel");
-            meal2.put("type", "Classic");
-
-            JSONObject meal3 = new JSONObject();
-            meal3.put("price", "5.90");
-            meal3.put("description", "Paprikaschnitzel mit Salzkartoffeln und Salat vom Buffet");
-            meal3.put("type", "Brainfood");
-
-            meals.put(meal1);
-            meals.put(meal2);
-            meals.put(meal3);
-
-            day2.put("meals", meals);
-
-            mealSchedule.put(day1);
-            mealSchedule.put(day2);
-
-            demoMealSchedule.put("mealSchedule", mealSchedule);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+        JSONObject demoMealSchedule = canteenHelper.getDemoData(canteen.getId(), canteen.getName());
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Config.KEY_SCHEDULE_PREFIX + String.valueOf(canteen.getId()), demoMealSchedule.toString());
@@ -164,8 +116,6 @@ public class CanteenDetailFragment extends Fragment {
 
         String defaultString = "";
         String mealJson = preferences.getString(Config.KEY_SCHEDULE_PREFIX + String.valueOf(canteen.getId()), defaultString);
-
-        // TODO add check if timestamp is valid
 
         // display meal schedule
         try {

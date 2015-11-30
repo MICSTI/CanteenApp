@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (!isMyServiceRunning(FavouriteMealService.class)) {
             // create intent with service
-            Intent intent = new Intent(this, FavouriteMealService.class);
+            /*Intent intent = new Intent(this, FavouriteMealService.class);
 
             // start favourite meal service to run every day at a specified time
             Calendar calendar = Calendar.getInstance();
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements
 
             AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
             alarmManager.cancel(pendingIntent);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);*/
         }
     }
 

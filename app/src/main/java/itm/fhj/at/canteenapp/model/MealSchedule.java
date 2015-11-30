@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
  */
 public class MealSchedule {
     private Location location;
-    private long timestamp;
+    private String valid;
 
     private LinkedHashMap<String, ArrayList<Meal>> calendar;
 
@@ -24,12 +24,12 @@ public class MealSchedule {
         this.location = location;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public void setValid(String valid) {
+        this.valid = valid;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public String getValid() {
+        return valid;
     }
 
     public LinkedHashMap<String, ArrayList<Meal>> getCalendar() {
