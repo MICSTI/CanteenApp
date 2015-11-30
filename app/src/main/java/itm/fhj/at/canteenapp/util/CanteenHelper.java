@@ -1,5 +1,7 @@
 package itm.fhj.at.canteenapp.util;
 
+import android.app.ActivityManager;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,5 +66,4 @@ public class CanteenHelper {
 
         return mealSchedule;
     }
-
 }
