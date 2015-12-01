@@ -210,6 +210,9 @@ public class MainActivity extends AppCompatActivity implements
         editor.commit();
 
         vpHost.setCurrentItem(1);
+
+        // set canteen name in canteen detail fragment
+        canteenDetailFragment.setCanteenName(canteenName);
     }
 
     // Favourite Meal

@@ -231,4 +231,9 @@ public class CanteenDetailFragment extends Fragment {
 
         return favourites;
     }
+
+    public void setCanteenName(String name) {
+        if (!name.trim().isEmpty())
+            txtMensaName.setText(name.trim());
+    }
 }
