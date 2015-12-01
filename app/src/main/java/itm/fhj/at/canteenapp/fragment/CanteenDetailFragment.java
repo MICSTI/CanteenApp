@@ -157,7 +157,8 @@ public class CanteenDetailFragment extends Fragment {
     }
 
     public void updateMealScheduleList() {
-
+        // update favourite meals
+        favourites = getFavouriteMeals();
 
         JSONObject demoMealSchedule = canteenHelper.getDemoData(canteen.getId(), canteen.getName());
 
@@ -210,4 +211,17 @@ public class CanteenDetailFragment extends Fragment {
         }
     }
 
+    public ArrayList<String> getFavouriteMeals() {
+        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "");
+
+        String[] favouritesArray = favouritesString.split(";");
+
+        ArrayList<String> favourites = new ArrayList<String>();
+
+        for (String fav : favouritesArray) {
+            favourites.add(fav);
+        }
+
+        return favourites;
+    }
 }

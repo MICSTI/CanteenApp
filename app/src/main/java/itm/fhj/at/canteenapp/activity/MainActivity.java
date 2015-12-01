@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements
         canteenDetailFragment = CanteenDetailFragment.newInstance();
         canteenDetailFragment.setFavourites(getFavouriteMeals());
         favouriteMealFragment = FavouriteMealFragment.newInstance();
+        favouriteMealFragment.setCanteenDetailFragment(canteenDetailFragment);
 
         preparePager();
     }

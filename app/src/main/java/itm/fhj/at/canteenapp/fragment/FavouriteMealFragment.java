@@ -42,6 +42,8 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
 
     private ArrayList<String> favourites;
 
+    private CanteenDetailFragment canteenDetailFragment;
+
     /**
      * The fragment's ListView/GridView.
      */
@@ -112,6 +114,8 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
 
                 updateListView();
 
+                canteenDetailFragment.updateMealScheduleList();
+
                 Toast toast = Toast.makeText(getContext(), "Removed " + toRemove + " from favourite meals", Toast.LENGTH_SHORT);
                 toast.show();
 
@@ -172,6 +176,7 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
                 public void onDialogFinished(String text) {
                     updateArrayList();
                     updateListView();
+                    canteenDetailFragment.updateMealScheduleList();
                 }
             });
             dialog.show(getActivity().getSupportFragmentManager(), Config.DIALOG_ADD_FAVOURITE_MEAL);
@@ -228,6 +233,10 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
+    }
+
+    public void setCanteenDetailFragment(CanteenDetailFragment fragment) {
+        this.canteenDetailFragment = fragment;
     }
 
 }
