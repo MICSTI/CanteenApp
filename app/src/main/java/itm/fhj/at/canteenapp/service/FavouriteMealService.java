@@ -89,16 +89,18 @@ public class FavouriteMealService extends IntentService {
                     // build array list with meals to notify the user about
                     ArrayList<String> toNotify = new ArrayList<String>();
 
-                    for (Meal meal : mealsToday) {
-                        String favourite = checkFavouriteMeals(meal);
+                    if (mealsToday != null && mealsToday.size() > 0) {
+                        for (Meal meal : mealsToday) {
+                            String favourite = checkFavouriteMeals(meal);
 
-                        if (favourite != null && !toNotify.contains(favourite)) {
-                            toNotify.add(favourite);
+                            if (favourite != null && !toNotify.contains(favourite)) {
+                                toNotify.add(favourite);
+                            }
                         }
-                    }
 
-                    if (toNotify.size() > 0) {
-                        issueNotification(toNotify);
+                        if (toNotify.size() > 0) {
+                            issueNotification(toNotify);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -157,7 +157,7 @@ public class CanteenHelper {
             day3.put("meals", meals3);*/
 
             JSONObject day4 = new JSONObject();
-            day4.put("date", "01.12.2015");
+            day4.put("date", "03.12.2015");
 
             JSONArray meals4 = new JSONArray();
 
