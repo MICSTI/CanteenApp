@@ -18,4 +18,7 @@ public class Config {
     public static String NOTIFICATION_ID = "notification-id";
 
     public static int NOTIFICATION_HOUR = 11;
+
+    public static int DEFAULT_CANTEEN_ID = 50;
+    public static String DEFAULT_CANTEEN_NAME = "FH JOANNEUM Kapfenberg";
 }

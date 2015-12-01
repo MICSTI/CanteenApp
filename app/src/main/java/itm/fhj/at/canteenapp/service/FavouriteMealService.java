@@ -13,7 +13,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import itm.fhj.at.canteenapp.R;
 import itm.fhj.at.canteenapp.activity.MainActivity;
@@ -78,7 +80,10 @@ public class FavouriteMealService extends IntentService {
                 mealSchedule = canteenHelper.parseMealScheduleJsonObject(mealScheduleJson);
 
                 // get meals for today
-                ArrayList<Meal> mealsToday = mealSchedule.getMeals("27.10.2015");
+                SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+                String today = format.format(new Date());
+
+                ArrayList<Meal> mealsToday = mealSchedule.getMeals(today);
 
                 // build array list with meals to notify the user about
                 ArrayList<String> toNotify = new ArrayList<String>();

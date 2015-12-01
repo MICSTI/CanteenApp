@@ -20,8 +20,10 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import itm.fhj.at.canteenapp.R;
 import itm.fhj.at.canteenapp.fragment.CanteenDetailFragment;
@@ -46,32 +48,57 @@ public class MainActivity extends AppCompatActivity implements
     private CanteenDetailFragment canteenDetailFragment;
     private FavouriteMealFragment favouriteMealFragment;
 
+    private boolean fromNotification = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // init shared preferences
+        preferences = getSharedPreferences(Config.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        int savedCanteenId = preferences.getInt(Config.KEY_CANTEEN_ID, -1);
+        String savedCanteenName = preferences.getString(Config.KEY_CANTEEN_NAME, null);
+
+        if (savedCanteenId == -1) {
+            editor.putInt(Config.KEY_CANTEEN_ID, Config.DEFAULT_CANTEEN_ID);
+            editor.commit();
+        }
+
+        if (savedCanteenName == null) {
+            editor.putString(Config.KEY_CANTEEN_NAME, Config.DEFAULT_CANTEEN_NAME);
+            editor.commit();
+        }
+
         // get intent
         Intent passedIntent = getIntent();
 
-        try {
-            // if app was started from notification, dismiss the notification
-            int notificationId = (int)passedIntent.getSerializableExtra(Config.NOTIFICATION_ID);
+        if (passedIntent != null) {
+            try {
+                // if app was started from notification, dismiss the notification
+                int notificationId = (int)passedIntent.getSerializableExtra(Config.NOTIFICATION_ID);
 
-            if (notificationId > 0) {
-                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                if (notificationId > 0) {
+                    fromNotification = true;
 
-                notificationManager.cancel(notificationId);
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                    notificationManager.cancel(notificationId);
+                } else
+                    fromNotification = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+                fromNotification = false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            fromNotification = false;
         }
 
         setContentView(R.layout.activity_main);
 
         vpHost = (ViewPager) findViewById(R.id.vpHost);
-
-        preferences = getSharedPreferences(Config.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
         // init fragments
         locationFragment = LocationFragment.newInstance();
@@ -87,9 +114,9 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
 
-        if (!isMyServiceRunning(FavouriteMealService.class)) {
+        if (!fromNotification && !isMyServiceRunning(FavouriteMealService.class)) {
             // create intent with service
-            /*Intent intent = new Intent(this, FavouriteMealService.class);
+            Intent intent = new Intent(this, FavouriteMealService.class);
 
             // start favourite meal service to run every day at a specified time
             Calendar calendar = Calendar.getInstance();
@@ -101,7 +128,11 @@ public class MainActivity extends AppCompatActivity implements
 
             AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
             alarmManager.cancel(pendingIntent);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);*/
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
+            Toast.makeText(this, "Favourite meal service started", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Favourite meal service already started", Toast.LENGTH_SHORT).show();
         }
     }
 
