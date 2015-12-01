@@ -73,34 +73,36 @@ public class FavouriteMealService extends IntentService {
             // get favourites from shared preferences
             getFavourites();
 
-            // get meal schedule
-            JSONObject mealScheduleJson = null;
-            try {
-                mealScheduleJson = new JSONObject(preferences.getString(Config.KEY_SCHEDULE_PREFIX + String.valueOf(canteen.getId()), ""));
-                mealSchedule = canteenHelper.parseMealScheduleJsonObject(mealScheduleJson);
+            if (favourites.size() > 0) {
+                // get meal schedule
+                JSONObject mealScheduleJson = null;
+                try {
+                    mealScheduleJson = new JSONObject(preferences.getString(Config.KEY_SCHEDULE_PREFIX + String.valueOf(canteen.getId()), ""));
+                    mealSchedule = canteenHelper.parseMealScheduleJsonObject(mealScheduleJson);
 
-                // get meals for today
-                SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-                String today = format.format(new Date());
+                    // get meals for today
+                    SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+                    String today = format.format(new Date());
 
-                ArrayList<Meal> mealsToday = mealSchedule.getMeals(today);
+                    ArrayList<Meal> mealsToday = mealSchedule.getMeals(today);
 
-                // build array list with meals to notify the user about
-                ArrayList<String> toNotify = new ArrayList<String>();
+                    // build array list with meals to notify the user about
+                    ArrayList<String> toNotify = new ArrayList<String>();
 
-                for (Meal meal : mealsToday) {
-                    String favourite = checkFavouriteMeals(meal);
+                    for (Meal meal : mealsToday) {
+                        String favourite = checkFavouriteMeals(meal);
 
-                    if (favourite != null && !toNotify.contains(favourite)) {
-                        toNotify.add(favourite);
+                        if (favourite != null && !toNotify.contains(favourite)) {
+                            toNotify.add(favourite);
+                        }
                     }
-                }
 
-                if (toNotify.size() > 0) {
-                    issueNotification(toNotify);
+                    if (toNotify.size() > 0) {
+                        issueNotification(toNotify);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         }
 
@@ -108,12 +110,16 @@ public class FavouriteMealService extends IntentService {
     }
 
     private void getFavourites() {
-        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "");
+        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "").trim();
 
-        String[] favouritesArray = favouritesString.split(";");
+        if (favouritesString.isEmpty()) {
+            favourites = new ArrayList<String>();
+        } else {
+            String[] favouritesArray = favouritesString.split(";");
 
-        for (String fav : favouritesArray) {
-            favourites.add(fav);
+            for (String fav : favouritesArray) {
+                favourites.add(fav);
+            }
         }
     }
 

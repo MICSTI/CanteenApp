@@ -259,14 +259,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public ArrayList<String> getFavouriteMeals() {
-        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "");
-
-        String[] favouritesArray = favouritesString.split(";");
+        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "").trim();
 
         ArrayList<String> favourites = new ArrayList<String>();
 
-        for (String fav : favouritesArray) {
-            favourites.add(fav);
+        if (!favouritesString.isEmpty()) {
+            String[] favouritesArray = favouritesString.split(";");
+
+            for (String fav : favouritesArray) {
+                favourites.add(fav);
+            }
         }
 
         return favourites;

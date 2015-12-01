@@ -79,8 +79,11 @@ public class MealScheduleItem implements Item {
     }
 
     private boolean checkFavourite(String meal) {
+        if (favourites == null)
+            return false;
+
         for (String fav : favourites) {
-            if (meal.toLowerCase().contains(fav.toLowerCase()))
+            if (!fav.trim().isEmpty() && meal.toLowerCase().contains(fav.toLowerCase()))
                 return true;
         }
 

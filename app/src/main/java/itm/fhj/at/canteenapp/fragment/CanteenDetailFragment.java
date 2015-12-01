@@ -199,7 +199,14 @@ public class CanteenDetailFragment extends Fragment {
 
                 for (Meal meal : meals) {
                     MealScheduleItem item = new MealScheduleItem(meal, getContext());
-                    item.setFavourites(favourites);
+
+                    if (favourites.size() > 0) {
+                        item.setFavourites(favourites);
+                    } else {
+                        item.setFavourites(new ArrayList<String>());
+                    }
+
+
                     items.add(item);
                 }
             }

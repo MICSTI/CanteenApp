@@ -203,14 +203,16 @@ public class FavouriteMealFragment extends Fragment implements AbsListView.OnIte
     private void updateArrayList() {
         preferences = getActivity().getSharedPreferences(Config.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
-        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "");
-
-        String[] favouritesArray = favouritesString.split(";");
+        String favouritesString = preferences.getString(Config.KEY_FAVOURITE_MEALS, "").trim();
 
         favourites = new ArrayList<String>();
 
-        for (String fav : favouritesArray) {
-            favourites.add(fav);
+        if (!favouritesString.isEmpty()) {
+            String[] favouritesArray = favouritesString.split(";");
+
+            for (String fav : favouritesArray) {
+                favourites.add(fav);
+            }
         }
     }
 
