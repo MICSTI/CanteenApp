@@ -33,3 +33,8 @@ This is a project for the Mobile App Development course of ITM13
   - current meal schedule for the selected Mensa location
   - the user's favourite meals
 - all data is stored in the device's *SharedPreferences*
+
+# Possible improvements
+If you want to help us improve the app we'd be very thankful and happy! Here are some things we noticed that could be improved:
+- the app's usability: The setup with fragments works pretty well, but the users would need visual guidance to quickly realize that they can swipe. Maybe an additional title bar under the AppBar would be useful.
+- the implementation of the automatic update of meal schedules needs some serious refactoring. A service that handles the updates of the meal schedule at the start of each week would be really helpful.
