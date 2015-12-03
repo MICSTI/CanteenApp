@@ -26,3 +26,10 @@ This is a project for the Mobile App Development course of ITM13
 - to run the app with its full potential, it requires the following permissions:
   - *ACCESS_NETWORK_STATE*, for determining if it is possible to update the meal schedule and the list of Mensa locations
   - *INTERNET*, for updating the meal schedule and the list of Mensa locations through HTTP requests
+
+# Local storage
+- the app stores the following data locally on the device:
+  - default Mensa location (id and name of the canteen)
+  - current meal schedule for the selected Mensa location
+  - the user's favourite meals
+- all data is stored in the device's *SharedPreferences*
